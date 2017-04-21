@@ -14,8 +14,8 @@ const sentence = process.argv[2];
  * =========
  * Remember to set MYNLU_RASA_URL and MYNLU_RASA_TOKE with the values obtained from HEROKU
  */
-const MYNLU_RASA_URL = '***REMOVED***';
-const MYNLU_RASA_TOKEN = '***REMOVED***';
+const MYNLU_RASA_URL = '<INSERT YOUR URL HERE>';
+const MYNLU_RASA_TOKEN = '<INSERT YOUR TOKEN HERE>';
 
 /**
  * This function will parse the sentence returning the result
