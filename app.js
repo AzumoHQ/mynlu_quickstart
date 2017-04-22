@@ -22,17 +22,14 @@ const server = http.createServer(function (req, res) {
 });
 
 function displayForm(res) {
-  const parsingResult = "test parsing result";
-  res.render('form.html');
-  res.end();
-  /*fs.readFile('form.html', function (err, data) {
+  fs.readFile('form.html', function (err, data) {
     res.writeHead(200, {
       'Content-Type': 'text/html',
       'Content-Length': data.length
     });
     res.write(data);
     res.end();
-  });*/
+  });
 }
 
 function processAllFieldsOfTheForm(req, res) {
