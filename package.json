@@ -20,5 +20,9 @@
     "setup": "node setup.js"
   },
   "author": "Alvaro Quezada (alvaro@azumo.co), JP Lorandi (jp@azumo.co)",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AzumoHQ/mynlu_quickstart.git"
+  }
 }
