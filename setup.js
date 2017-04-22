@@ -7,6 +7,7 @@
 const Promise = require('bluebird');
 
 const exec = require('child_process').exec;
+const fs = require('fs');
 
 const appName = process.argv[2];
 
@@ -28,6 +29,18 @@ function execP(command) {
   });
 }
 
+function appendToFile(filename, line) {
+  return new Promise(function (resolve, reject) {
+    fs.appendFile(filename, line, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(line);
+      }
+    })
+  });
+}
+
 function setup(appName) {
   Promise.coroutine(function *() {
     //TODO: verify heroku, git, node, npm are installed.
@@ -46,9 +59,14 @@ function setup(appName) {
     console.log(`Provisioned mynlu-rasa to app ${appName}`);
     const bindGitRemote = yield execP(`heroku git:remote -a ${appName}`);
     console.log(`Bound heroku git remote to app ${appName}`);
-    console.log(`Installing dependencies...`);
-    const installDependencies = yield execP(`npm install`);
-    console.log(`Dependencies installed`);
+
+    console.log(`Generating .env file`);
+    const MYNLU_RASA_URL = yield execP(`heroku config:get MYNLU_RASA_URL`);
+    const MYNLU_RASA_TOKEN = yield execP(`heroku config:get MYNLU_RASA_TOKEN`);
+
+    const tokenAppended = appendToFile('.env', `MYNLU_RASA_TOKEN=${MYNLU_RASA_TOKEN.stdout}`);
+    const urlAppended = appendToFile('.env', `MYNLU_RASA_URL=${MYNLU_RASA_URL.stdout}`);
+
 
 
 
