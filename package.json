@@ -4,15 +4,17 @@
   "description": "Tutorial to connect node app with mynlu-rasa on heroku",
   "main": "app.js",
   "dependencies": {
-    "param": "^1.0.1"
+    "param": "^1.0.1",
+    "request": "^2.81.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "NODE_DEBUG=trace mocha test/**/*.*",
     "test no-trace": "mocha test/**/*.*",
-    "start": "NODE_DEBUG=trace node apps.js",
-    "start mon": "NODE_DEBUG=trace nodemon app.js"
+    "start": "NODE_DEBUG=trace node app.js",
+    "start mon": "NODE_DEBUG=trace nodemon app.js",
+    "train": "NODE_DEBUG=trace nodemon train.js"
   },
-  "author": "Alvaro Quezada",
+  "author": "Alvaro Quezada (alvaro@azumo.co), JP Lorandi (jp@azumo.co)",
   "license": "ISC"
 }

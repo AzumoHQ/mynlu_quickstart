@@ -1,5 +1,5 @@
 /**
- * Created by Alvaro on 4/21/17.
+ * Created by Alvaro & JP Lorandi on 4/21/17.
  */
 
 // add request module to communicate with the HEROKU Add-on service myNLU-RASA
@@ -14,8 +14,8 @@ const sentence = process.argv[2];
  * =========
  * Remember to set MYNLU_RASA_URL and MYNLU_RASA_TOKE with the values obtained from HEROKU
  */
-const MYNLU_RASA_URL = '<INSERT YOUR URL HERE>';
-const MYNLU_RASA_TOKEN = '<INSERT YOUR TOKEN HERE>';
+const MYNLU_RASA_URL = process.env.MYNLU_RASA_URL;
+const MYNLU_RASA_TOKEN = process.env.MYNLU_RASA_TOKEN;
 
 /**
  * This function will parse the sentence returning the result
@@ -25,7 +25,7 @@ const MYNLU_RASA_TOKEN = '<INSERT YOUR TOKEN HERE>';
  */
 function parseSentence(sentence, callback) {
   // remember to use your own configuration for MYNLU_RASA_URL and MYNLU_RASA_TOKEN
-  var url = MYNLU_RASA_URL+"/parse?token="+MYNLU_RASA_TOKEN;
+  var url = `${MYNLU_RASA_URL}/parse?token=${MYNLU_RASA_TOKEN}`;
   return request.post({
     url: url,
     json: {
