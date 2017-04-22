@@ -64,6 +64,7 @@ function setup(appName) {
     const MYNLU_RASA_URL = yield execP(`heroku config:get MYNLU_RASA_URL`);
     const MYNLU_RASA_TOKEN = yield execP(`heroku config:get MYNLU_RASA_TOKEN`);
 
+    const portAppended = appendToFile('.env', 'PORT=3000');
     const tokenAppended = appendToFile('.env', `MYNLU_RASA_TOKEN=${MYNLU_RASA_TOKEN.stdout}`);
     const urlAppended = appendToFile('.env', `MYNLU_RASA_URL=${MYNLU_RASA_URL.stdout}`);
 
