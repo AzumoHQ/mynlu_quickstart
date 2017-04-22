@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "formidable": "^1.1.1",
     "param": "^1.0.1",
     "request": "^2.81.0"
   },

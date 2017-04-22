@@ -5,15 +5,57 @@
 // add request module to communicate with the HEROKU Add-on service myNLU-RASA
 const request = require('request');
 
-// get the param of the app as the sentence to parse
-const sentence = process.argv[2];
+const server_port = process.env.SERVER_PORT || 8080;
 
-/**
- *
- * IMPORTANT
- * =========
- * Remember to set MYNLU_RASA_URL and MYNLU_RASA_TOKE with the values obtained from HEROKU
- */
+const http = require('http');
+const fs = require('fs');
+const formidable = require("formidable");
+const util = require('util');
+
+const server = http.createServer(function (req, res) {
+  if (req.method.toLowerCase() == 'get') {
+    displayForm(res);
+  } else if (req.method.toLowerCase() == 'post') {
+    processAllFieldsOfTheForm(req, res);
+  }
+
+});
+
+function displayForm(res) {
+  const parsingResult = "test parsing result";
+  res.render('form.html');
+  res.end();
+  /*fs.readFile('form.html', function (err, data) {
+    res.writeHead(200, {
+      'Content-Type': 'text/html',
+      'Content-Length': data.length
+    });
+    res.write(data);
+    res.end();
+  });*/
+}
+
+function processAllFieldsOfTheForm(req, res) {
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function (err, fields, files) {
+    //Store the data from the fields in your data store.
+    //The data store could be a file or database or any other store based
+    //on your application.
+    res.writeHead(200, {
+      'content-type': 'text/plain'
+    });
+    res.write('received the data:\n\n');
+    res.write(`Sentence: ${fields.sentence}`);
+    parseSentence(fields.sentence, function(response) {
+      res.end(util.inspect(response));
+    });
+  });
+}
+
+server.listen(server_port);
+console.log(`server listening on ${server_port}`);
+
 const MYNLU_RASA_URL = process.env.MYNLU_RASA_URL;
 const MYNLU_RASA_TOKEN = process.env.MYNLU_RASA_TOKEN;
 
@@ -25,7 +67,7 @@ const MYNLU_RASA_TOKEN = process.env.MYNLU_RASA_TOKEN;
  */
 function parseSentence(sentence, callback) {
   // remember to use your own configuration for MYNLU_RASA_URL and MYNLU_RASA_TOKEN
-  var url = `${MYNLU_RASA_URL}/parse?token=${MYNLU_RASA_TOKEN}`;
+  const url = `${MYNLU_RASA_URL}/parse?token=${MYNLU_RASA_TOKEN}`;
   return request.post({
     url: url,
     json: {
@@ -37,16 +79,8 @@ function parseSentence(sentence, callback) {
       callback(body);
     } else {
       // some error has happened so show data to debug.
-      console.log('error', error);
-      console.log('response.statusCode', response.statusCode);
-      console.log('body', body);
+      callback({error: error, status: response.statusCode, body: body});
     }
   })
 
 }
-
-// Call the parse funciton with the sentence to parse, the second param defines de callback function
-parseSentence(sentence, function (result) {
-  console.log("Response received:");
-  console.log(result); // the result received is a JSON object
-});

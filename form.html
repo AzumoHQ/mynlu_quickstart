@@ -1,0 +1,14 @@
+<html>
+<body>
+<form action="" method="post" enctype="multipart/form-data">
+    <fieldset>
+        <label for="sentence">Sentence:</label>
+        <input type="text" id="sentence" name="sentence" placeholder="Here write the sentence to parse" /><br>
+        <input type="submit" value="Parse Sentence" />
+    </fieldset>
+    <fieldset>
+        <textarea name="parseResult" id="" cols="30" rows="10"><%= parsingResult %></textarea>
+    </fieldset>
+</form>
+</body>
+</html>
