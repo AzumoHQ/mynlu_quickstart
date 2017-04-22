@@ -4,6 +4,8 @@ const fs = require('fs');
 
 function train(modelFile) {
   const payload = JSON.parse(fs.readFileSync(modelFile, 'utf8'));
+  const MYNLU_RASA_URL = process.env.MYNLU_RASA_URL;
+  const MYNLU_RASA_TOKEN = process.env.MYNLU_RASA_TOKEN;
   return new Promise((resolve, reject) => {
     var url = `${MYNLU_RASA_URL}/train?token=${MYNLU_RASA_TOKEN}`;
     return request.post({

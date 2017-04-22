@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "dotenv": "^4.0.0",
     "param": "^1.0.1",
     "request": "^2.81.0"
   },
@@ -14,7 +15,7 @@
     "test no-trace": "mocha test/**/*.*",
     "start": "NODE_DEBUG=trace node app.js",
     "start mon": "NODE_DEBUG=trace nodemon app.js",
-    "train": "NODE_DEBUG=trace nodemon train.js",
+    "train": "NODE_DEBUG=trace node train_cli.js",
     "setup": "node setup.js"
   },
   "author": "Alvaro Quezada (alvaro@azumo.co), JP Lorandi (jp@azumo.co)",
