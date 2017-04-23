@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>myNLU-RASA First App</title>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h1>myNLU-RASA Test Application</h1>
+    <h2>Parse</h2>
+    <p>Write a sentence and then press "Parse Sentence" button to analyse with myNLU-RASA</p>
+    <form action="" method="post" enctype="multipart/form-data">
+        <fieldset>
+            <p>
+                <label for="sentence">Sentence:</label><br>
+                <input type="text" id="sentence" name="sentence" placeholder="Here write the sentence to parse" class="col-xs-12"/><br>
+            </p>
+            <p>
+                <input type="submit" value="Parse Sentence"/>
+            </p>
+            <input type="hidden" name="action" value="parse"/>
+        </fieldset>
+        <fieldset>
+            <label for="parseResult">Parsign Result</label>
+            <textarea name="parseResult" id="parseResult"  rows="12" class="col-xs-12">{{ parsingResult }}</textarea>
+        </fieldset>
+    </form>
+    <h2>Train</h2>
+    <p>Select a JSON training file and press "Train" to upload and train myNLU-RASA.</p>
+    <form action="" method="post" enctype="multipart/form-data">
+        <fieldset>
+            <label for="trainFile">Training File</label><br>
+            <input type="file" id="trainFile" name="trainFile" accept="application/json"><br>
+            <input type="submit" value="Train"/>
+            <input type="hidden" name="action" value="train"/>
+            <p>{{trainResult}}</p>
+        </fieldset>
+    </form>
+    <h2>Check Status</h2>
+    <p>Check Training status</p>
+    <form action="" method="post" enctype="multipart/form-data">
+        <fieldset>
+            <input type="submit" value="Check Status"/>
+            <input type="hidden" name="action" value="status"/>
+            <p>{{trainStatus}}</p>
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>

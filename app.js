@@ -4,66 +4,55 @@
 
 // add request module to communicate with the HEROKU Add-on service myNLU-RASA
 const request = require('request');
-const express = require('express');
-const bodyParser = require('body-parser');
-const templates = require('express-handlebars');
-Promise = require('bluebird');
-
 
 if (!process.env.PORT) {
   require('dotenv').config();
 }
 
 const server_port = process.env.PORT || 8080;
-
-const app = express();
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-app.engine('handlebars', templates({defaultLayout: 'main'}));
-
-app.set('view engine', 'handlebars');
-app.set('views', __dirname + '/views');
-
-// const http = require('http');
-const fs = require('fs');
-// const formidable = require("formidable");
-const util = require('util');
-
 const MYNLU_RASA_URL = process.env.MYNLU_RASA_URL;
 const MYNLU_RASA_TOKEN = process.env.MYNLU_RASA_TOKEN;
 
-
-// const server = http.createServer(function (req, res) {
-//   if (req.method.toLowerCase() == 'get') {
-//     displayForm(res);
-//   } else if (req.method.toLowerCase() == 'post') {
-//     processAllFieldsOfTheForm(req, res);
-//   }
-//
-// });
+const http = require('http');
+const fs = require('fs');
+const formidable = require("express-formidable");
+const util = require('util');
+const app = require('express')();
+const mustacheExpress = require('mustache-express');
+const Promise = require('bluebird');
 
 
-function displayForm(req, res) {
-  res.render('home', {});
-}
+app.use(formidable());
+// Register '.mustache' extension with The Mustache Express
+app.engine('html', mustacheExpress());
 
-function processAllFieldsOfTheForm(req, res) {
-  // console.log('res: ', req);
-  // console.log('res.body: ', req.body);
-  parseSentence(req.body.sentence).then((value) => {
-    res.render('home', {value: JSON.stringify(value)});
-  }).catch((error) => {
-    res.render('home', {error: JSON.stringify(error)});
-  });
+app.set('view engine', 'mustache');
+app.set('views', __dirname + '/views');
 
+app.get("/", function (req, res) {
+  console.log("get");
+  res.render('form.html');
+});
 
-}
+app.post("/", function(req, res){
+  return Promise.coroutine(function *() {
+    if (req.files.trainFile) {
+      const response = yield trainFile(req.files.trainFile.path);
+      res.render('form.html', {parsingResult: response});
+    } else if (req.fields.sentence) {
+      const response = yield parseSentence(req.fields.sentence);
+      res.render('form.html', {parsingResult: JSON.stringify(response, null, 2)});
+    } else {
+      res.render('form.html');
+    }
+  })();
+});
 
-app.get('/', displayForm);
-app.post('/', processAllFieldsOfTheForm);
-
+//server.listen(server_port);
 app.listen(server_port);
 console.log(`server listening on ${server_port}`);
+
+
 
 /**
  * This function will parse the sentence returning the result
@@ -72,9 +61,8 @@ console.log(`server listening on ${server_port}`);
  * @returns {*}
  */
 function parseSentence(sentence) {
-  // remember to use your own configuration for MYNLU_RASA_URL and MYNLU_RASA_TOKEN
-  const url = `${MYNLU_RASA_URL}/parse?token=${MYNLU_RASA_TOKEN}`;
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject){
+    const url = `${MYNLU_RASA_URL}/parse?token=${MYNLU_RASA_TOKEN}`;
     request.post({
       url: url,
       json: {
@@ -91,4 +79,21 @@ function parseSentence(sentence) {
     })
   });
 
+}
+
+function trainFile(path) {
+  return new Promise(function(resolve, reject) {
+    const formData = {
+      body: fs.createReadStream(path)
+    };
+    const url = `${MYNLU_RASA_URL}/train?token=${MYNLU_RASA_TOKEN}`;
+
+    request.post({url, formData}, (err, httpResponse, body) => {
+      if (!err && httpResponse.statusCode == 200) {
+        resolve(body);
+      } else {
+        reject ({err, httpResponse, body});
+      }
+    })
+  });
 }
