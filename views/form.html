@@ -16,7 +16,7 @@
         <fieldset>
             <p>
                 <label for="sentence">Sentence:</label><br>
-                <input type="text" id="sentence" name="sentence" placeholder="Here write the sentence to parse" class="col-xs-12"/><br>
+                <input type="text" id="sentence" name="sentence" placeholder="Here write the sentence to parse" class="col-xs-12 col-md-8"/><br>
             </p>
             <p>
                 <input type="submit" value="Parse Sentence"/>
@@ -24,10 +24,11 @@
             <input type="hidden" name="action" value="parse"/>
         </fieldset>
         <fieldset>
-            <label for="parseResult">Parsign Result</label>
-            <textarea name="parseResult" id="parseResult"  rows="12" class="col-xs-12">{{ parsingResult }}</textarea>
+            <label for="parseResult">Parsing Result</label><br>
+            <textarea name="parseResult" id="parseResult"  rows="12" class="col-xs-12 col-md-8">{{ parsingResult }}</textarea>
         </fieldset>
     </form>
+    <hr>
     <h2>Train</h2>
     <p>Select a JSON training file and press "Train" to upload and train myNLU-RASA.</p>
     <form action="" method="post" enctype="multipart/form-data">
@@ -39,6 +40,7 @@
             <p>{{trainResult}}</p>
         </fieldset>
     </form>
+    <hr>
     <h2>Check Status</h2>
     <p>Check Training status</p>
     <form action="" method="post" enctype="multipart/form-data">
