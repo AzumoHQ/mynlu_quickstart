@@ -4,6 +4,7 @@
 
 // add request module to communicate with the HEROKU Add-on service myNLU-RASA
 const request = require('request');
+const fs = require('fs');
 
 if (!process.env.PORT) {
   require('dotenv').config();
@@ -13,42 +14,23 @@ const server_port = process.env.PORT || 8080;
 const MYNLU_RASA_URL = process.env.MYNLU_RASA_URL;
 const MYNLU_RASA_TOKEN = process.env.MYNLU_RASA_TOKEN;
 
-const http = require('http');
-const fs = require('fs');
-const formidable = require("express-formidable");
-const util = require('util');
-const app = require('express')();
-const mustacheExpress = require('mustache-express');
 const Promise = require('bluebird');
+const formidable = require("express-formidable");
 
+const app = require('express')();
+const exphbs = require('express-handlebars');
+
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 app.use(formidable());
 // Register '.mustache' extension with The Mustache Express
-app.engine('html', mustacheExpress());
-
-app.set('view engine', 'mustache');
-app.set('views', __dirname + '/views');
 
 app.get("/", function (req, res) {
   console.log("get");
-  res.render('form.html');
+  res.render('form');
 });
 
-function getStatus() {
-  return new Promise((resolve, reject) => {
-    const url = `${MYNLU_RASA_URL}/status?token=${MYNLU_RASA_TOKEN}`;
-    request.get({url}, function (error, response, body) {
-      console.log("status response");
-      console.log(response.statusCode);
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-        resolve(body);
-      } else {
-        reject({error, response, body});
-      }
-    });
-  });
-}
 
 app.post("/", function (req, res) {
   return Promise.coroutine(function *() {
@@ -70,11 +52,12 @@ app.post("/", function (req, res) {
         case "status":
           const response = yield getStatus();
           console.log("response:", response);
-          renderData = {statusResult: response};
+          console.log(typeof response);
+          renderData = {trainingProcesses: response.trainings_under_this_process, showStatus: true};
           break;
       }
       console.log("render data: ", renderData);
-      res.render('form.html', renderData);
+      res.render('form', renderData);
     }
   })();
 });
@@ -129,5 +112,21 @@ function trainFile(path) {
         reject({err, httpResponse, body});
       }
     })
+  });
+}
+
+
+function getStatus() {
+  return new Promise((resolve, reject) => {
+    const url = `${MYNLU_RASA_URL}/status?token=${MYNLU_RASA_TOKEN}`;
+    request.get({url}, function (error, response, body) {
+      console.log("status response");
+      console.log(response.statusCode);
+      if (!error && response.statusCode == 200) {
+        resolve(JSON.parse(body));
+      } else {
+        reject({error, response, body});
+      }
+    });
   });
 }
