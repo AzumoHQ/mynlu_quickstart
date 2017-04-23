@@ -25,31 +25,23 @@ const server = http.createServer(function (req, res) {
 
 });
 
-function displayForm(res) {
+function displayForm(res, response) {
   fs.readFile('form.html', function (err, data) {
     res.writeHead(200, {
-      'Content-Type': 'text/html',
-      'Content-Length': data.length
+      'Content-Type': 'text/html'
     });
-    res.write(data);
+    if (response) {
+      res.write(data.toString().replace("<%= parsingResult %>", JSON.stringify(response, null, 2)));
+    } else res.write(data.toString().replace("<%= parsingResult %>", ""));
     res.end();
   });
 }
 
 function processAllFieldsOfTheForm(req, res) {
   const form = new formidable.IncomingForm();
-
   form.parse(req, function (err, fields, files) {
-    //Store the data from the fields in your data store.
-    //The data store could be a file or database or any other store based
-    //on your application.
-    res.writeHead(200, {
-      'content-type': 'text/plain'
-    });
-    res.write('received the data:\n\n');
-    res.write(`Sentence: ${fields.sentence}`);
     parseSentence(fields.sentence, function(response) {
-      res.end(util.inspect(response));
+      displayForm(res, response)
     });
   });
 }
