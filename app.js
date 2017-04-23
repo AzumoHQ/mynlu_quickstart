@@ -4,13 +4,14 @@
 
 // add request module to communicate with the HEROKU Add-on service myNLU-RASA
 const request = require('request');
-
-const server_port = process.env.SERVER_PORT || 8080;
-
 const http = require('http');
 const fs = require('fs');
 const formidable = require("formidable");
 const util = require('util');
+require('dotenv').config();
+
+
+const server_port = process.env.SERVER_PORT || 8080;
 
 const server = http.createServer(function (req, res) {
   if (req.method.toLowerCase() == 'get') {
@@ -33,7 +34,7 @@ function displayForm(res) {
 }
 
 function processAllFieldsOfTheForm(req, res) {
-  var form = new formidable.IncomingForm();
+  const form = new formidable.IncomingForm();
 
   form.parse(req, function (err, fields, files) {
     //Store the data from the fields in your data store.
