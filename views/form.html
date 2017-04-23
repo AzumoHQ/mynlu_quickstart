@@ -1,9 +1,6 @@
 <html>
 <head>
     <title>myNLU-RASA First App</title>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
@@ -25,7 +22,7 @@
         </fieldset>
         <fieldset>
             <label for="parseResult">Parsing Result</label><br>
-            <textarea name="parseResult" id="parseResult"  rows="12" class="col-xs-12 col-md-8">{{ parsingResult }}</textarea>
+            <textarea name="parseResult" id="parseResult"  rows="12" class="col-xs-12 col-md-8">{{ parseResult }}</textarea>
         </fieldset>
     </form>
     <hr>
@@ -37,7 +34,7 @@
             <input type="file" id="trainFile" name="trainFile" accept="application/json"><br>
             <input type="submit" value="Train"/>
             <input type="hidden" name="action" value="train"/>
-            <p>{{trainResult}}</p>
+            <p>{{ trainResult }}</p>
         </fieldset>
     </form>
     <hr>
@@ -47,7 +44,7 @@
         <fieldset>
             <input type="submit" value="Check Status"/>
             <input type="hidden" name="action" value="status"/>
-            <p>{{trainStatus}}</p>
+            <p>{{ statusResult }}</p>
         </fieldset>
     </form>
 </div>
