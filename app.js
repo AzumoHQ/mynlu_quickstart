@@ -5,7 +5,11 @@
 // add request module to communicate with the HEROKU Add-on service myNLU-RASA
 const request = require('request');
 
-const server_port = process.env.SERVER_PORT || 8080;
+if (!process.env.PORT) {
+  require('dotenv').config();
+}
+
+const server_port = process.env.PORT || 8080;
 
 const http = require('http');
 const fs = require('fs');
