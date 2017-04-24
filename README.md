@@ -16,7 +16,7 @@ You will need to have installed command line versions of:
 
 From the command line clone the repository into a mynlu-qs directory:
 ```sh
-git clone https://github.com/AzumoHQ/mynlu_quickstart.git mynlu-qs`
+git clone https://github.com/AzumoHQ/mynlu_quickstart.git mynlu-qs
 ```
 
 Go into that directory:
