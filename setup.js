@@ -8,6 +8,7 @@ const Promise = require('bluebird');
 
 const exec = require('child_process').exec;
 const fs = require('fs');
+const os = require('os');
 
 const appName = process.argv[2];
 
@@ -41,6 +42,30 @@ function appendToFile(filename, line) {
   });
 }
 
+function deleteFile(filename) {
+  return new Promise((resolve, reject)=>{
+    fs.stat(filename,(error, stats)=>{
+      if (error == null) {
+        console.log(`Deleting ${filename}...`);
+        fs.unlink(filename, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            console.log(`${filename} deleted.`)
+            resolve(true);
+          }
+        })
+      } else if (error.code == 'ENOENT') {
+        // file doesn't exists do noting.
+        resolve(true);
+      } else if (error != null) {
+        // other errors...
+        reject(error);
+      }
+    })
+  })
+}
+
 function setup(appName) {
   Promise.coroutine(function *() {
     //TODO: verify heroku, git, node, npm are installed.
@@ -64,9 +89,11 @@ function setup(appName) {
     const MYNLU_RASA_URL = yield execP(`heroku config:get MYNLU_RASA_URL`);
     const MYNLU_RASA_TOKEN = yield execP(`heroku config:get MYNLU_RASA_TOKEN`);
 
-    const portAppended = appendToFile('.env', 'PORT=3000');
-    const tokenAppended = appendToFile('.env', `MYNLU_RASA_TOKEN=${MYNLU_RASA_TOKEN.stdout}`);
-    const urlAppended = appendToFile('.env', `MYNLU_RASA_URL=${MYNLU_RASA_URL.stdout}`);
+    const deleteEnv = yield deleteFile('.env');
+
+    const portAppended = yield appendToFile('.env', `PORT=3000${os.EOL}`);
+    const tokenAppended = yield appendToFile('.env', `MYNLU_RASA_TOKEN=${MYNLU_RASA_TOKEN.stdout}${os.EOL}`);
+    const urlAppended = yield appendToFile('.env', `MYNLU_RASA_URL=${MYNLU_RASA_URL.stdout}${os.EOL}`);
 
 
 
