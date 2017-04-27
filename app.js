@@ -107,7 +107,7 @@ function trainFile(path) {
       console.log("train response");
       // console.log(httpResponse.statusCode);
       if (!err && httpResponse && httpResponse.statusCode && httpResponse.statusCode == 200) {
-        resolve(JSON.parse(body));
+        resolve(JSON.stringify(body));
       } else {
         reject({err, httpResponse, body});
       }
