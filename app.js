@@ -84,7 +84,7 @@ function parseSentence(sentence) {
     }, function (error, response, body) {
       console.log("parse response");
       console.log(response.statusCode);
-      if (!error && response.statusCode == 200) {
+      if (!error && response.statusCode && response.statusCode == 200) {
         // if there is no error and statusCode is 200 every goes fine so call the callback
         resolve(body);
       } else {
@@ -97,17 +97,17 @@ function parseSentence(sentence) {
 }
 
 function trainFile(path) {
+  const payload = JSON.parse(fs.readFileSync(path, 'utf8'));
   return new Promise(function (resolve, reject) {
-    const formData = {
-      body: fs.createReadStream(path)
-    };
     const url = `${MYNLU_RASA_URL}/train?token=${MYNLU_RASA_TOKEN}`;
-
-    request.post({url, formData}, (err, httpResponse, body) => {
+    request.post({
+        url: url,
+        json: payload
+    }, (err, httpResponse, body) => {
       console.log("train response");
-      console.log(httpResponse.statusCode);
-      if (!err && httpResponse.statusCode == 200) {
-        resolve(body);
+      // console.log(httpResponse.statusCode);
+      if (!err && httpResponse && httpResponse.statusCode && httpResponse.statusCode == 200) {
+        resolve(JSON.parse(body));
       } else {
         reject({err, httpResponse, body});
       }
@@ -122,7 +122,7 @@ function getStatus() {
     request.get({url}, function (error, response, body) {
       console.log("status response");
       console.log(response.statusCode);
-      if (!error && response.statusCode == 200) {
+      if (!error && response && response.statusCode && response.statusCode == 200) {
         resolve(JSON.parse(body));
       } else {
         reject({error, response, body});
