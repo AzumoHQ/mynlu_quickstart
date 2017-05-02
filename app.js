@@ -94,7 +94,7 @@ function parseSentence(sentence) {
     }, function (error, response, body) {
       console.log("parse response");
       console.log(response.statusCode);
-      if (!error && response.statusCode == 200) {
+      if (!error && response.statusCode && response.statusCode == 200) {
         // if there is no error and statusCode is 200 every goes fine so call the callback
         resolve(body);
       } else {
@@ -138,7 +138,7 @@ function train(strData) {
     }, (err, response, body) => {
       console.log("train response");
       console.log(response.statusCode);
-      if (!err && response.statusCode == 200) {
+      if (!err && response && response.statusCode == 200) {
         resolve(body);
       } else {
         reject({err, response, body});
@@ -154,7 +154,7 @@ function getStatus() {
     request.get({url}, function (error, response, body) {
       console.log("status response");
       console.log(response.statusCode);
-      if (!error && response.statusCode == 200) {
+      if (!error && response && response.statusCode == 200) {
         resolve(JSON.parse(body));
       } else {
         reject({error, response, body});
