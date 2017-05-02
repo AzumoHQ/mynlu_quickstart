@@ -20,7 +20,7 @@
         {{#if parseError}}
             <div class="alert alert-danger fade in">
                 <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <strong>Error!</strong>{{ parseError }}
+                {{ parseError }}
             </div>
         {{/if}}
     </form>
@@ -29,10 +29,11 @@
     <p>Select a JSON training file and press "Train" to upload and train myNLU-RASA.</p>
     <form action="" method="post" enctype="multipart/form-data">
         <fieldset>
-            <label for="trainFile">Training File</label><br>
-            <input type="file" id="trainFile" name="trainFile" accept="application/json"><br>
-            <input type="submit" value="Train"/>
-            <input type="hidden" name="action" value="train"/>
+            <p><input type="file" id="trainFile" name="trainFile" accept="application/json"></p>
+            <p>Or copy and paste your JSON file in the text box bellow:</p>
+            <p class="clearfix"><textarea name="json_text" id="json_text" rows="12" class="col-xs-12 col-md-8" style="display:block">{{ json_text }}</textarea></p>
+            <p><input type="submit" value="Train"/></p>
+            <p><input type="hidden" name="action" value="train"/></p>
 
             {{#if trainResult }}
                 <div class="alert alert-success fade in">
