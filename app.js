@@ -38,12 +38,16 @@ app.post("/", function (req, res) {
       let renderData = null;
       switch (req.fields.action) {
         case "train":
-          if (req.files.trainFile) {
+          if (req.files.trainFile.size) {
+            console.log("trainFile");
+            console.log(req.files.trainFile);
             const response = yield trainFile(req.files.trainFile.path);
             renderData = {trainResult: response, json_text: response.json_text};
           } else if (req.fields.json_text) {
-            const response = yield train(req.fields.json_text);
-            renderData = {trainResul: response, json_text: req.fields.json_text};
+            console.log("json_text");
+            console.log(req.fields.json_text);
+            const response = yield trainStr(req.fields.json_text);
+            renderData = {trainResult: response, json_text: response.json_text};
           } else {
             renderData = {trainResult: "Nothing to parse"};
           }
@@ -63,7 +67,7 @@ app.post("/", function (req, res) {
           const response = yield getStatus();
           console.log("response:", response);
           console.log(typeof response);
-          renderData = {trainingProcesses: response.trainings_under_this_process, showStatus: true};
+          renderData = {status: JSON.stringify(response), showStatus: true};
           break;
       }
       console.log("render data: ", renderData);
@@ -118,6 +122,14 @@ function trainFile(path) {
       })
     });
     const json_text = strData.toString();
+    const result = yield train(json_text);
+    result.json_text = json_text;
+    return result;
+  })();
+}
+
+function trainStr(json_text) {
+  return Promise.coroutine(function *() {
     const result = yield train(json_text);
     result.json_text = json_text;
     return result;
